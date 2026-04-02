@@ -16,30 +16,19 @@
 # under the License.
 #
 
-version: "3.8"
-
 services:
 
-  db:
+  loki:
     extends:
-      file: ./config/docker/compose/postgresql.yml
-      service: postgresql
+      file: ./config/docker/compose/observability.yml
+      service: loki
 
-  fineract:
+  prometheus:
     extends:
-      file: ./config/docker/compose/fineract.yml
-      service: fineract
-    ports:
-      - "8443:8443"
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - ./config/docker/env/fineract.env
-      - ./config/docker/env/fineract-common.env
-      - ./config/docker/env/fineract-postgresql.env
-      - ./config/docker/env/prometheus.env
-    networks:
-      default:
-        aliases:
-          - fineract-server
+      file: ./config/docker/compose/observability.yml
+      service: prometheus
+
+  grafana:
+    extends:
+      file: ./config/docker/compose/observability.yml
+      service: grafana
